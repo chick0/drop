@@ -27,7 +27,11 @@ def get_max_size() -> int:
 
 
 @bp.get("")
-def front():
+@get_flag
+def front(flag: bool):
+    if not flag:
+        return render_template("upload/blocked.jinja2")
+
     return render_template(
         "upload/form.jinja2",
         max_size=int(get_max_size() / MB),
