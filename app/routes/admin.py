@@ -1,4 +1,5 @@
 from os import listdir
+from logging import getLogger
 
 from flask import Blueprint
 from flask import redirect
@@ -10,8 +11,10 @@ from app.utils import get_size
 from app.utils import login_required
 from app.utils import get_flag
 from app.utils import set_flag
+from app.utils import get_from
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
+logger = getLogger()
 
 
 @bp.get("")
@@ -38,4 +41,5 @@ def dashboard(flag: bool):
 @get_flag
 def toggle_status(flag: bool):
     set_flag(not flag)
+    logger.info(f"Flag updated to {str(flag)!r} from {get_from()}")
     return redirect("/admin")

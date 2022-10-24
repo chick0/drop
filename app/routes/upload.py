@@ -15,9 +15,10 @@ from app.utils import safe_filename
 from app.utils import safe_remove
 from app.utils import get_size
 from app.utils import get_flag
+from app.utils import get_from
 
 bp = Blueprint("upload", __name__, url_prefix="/")
-log = getLogger()
+logger = getLogger()
 
 
 def get_max_size() -> int:
@@ -64,6 +65,8 @@ def upload(flag: bool):
         if not head.startswith(b"PK"):
             return "해당 파일은 zip 파일이 아닙니다.", 400
 
+        logger.info(f"{filename!r} file uploading start from by {get_from()}")
+
     total_file_size = int(request.form['dztotalfilesize'])
 
     if total_file_size > get_max_size():
@@ -74,7 +77,7 @@ def upload(flag: bool):
             f.seek(int(request.form['dzchunkbyteoffset']))
             f.write(stream)
     except OSError:
-        log.exception("Fail to save uploaded file!!!")
+        logger.exception("Fail to save uploaded file!!!")
         remove_self()
         return "파일 저장 과정에서 오류가 발생했습니다.", 500
 
@@ -88,5 +91,6 @@ def upload(flag: bool):
             return "업로드한 파일의 크기가 일치하지 않아 취소되었습니다.", 400
         else:
             create_metadata(filename)
+            logger.info(f"{filename!r} file uploaded by {get_from()}")
 
     return "업로드 성공", 200

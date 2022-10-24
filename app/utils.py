@@ -78,3 +78,7 @@ def get_device(user_agent: str = None) -> str:
 
     ua = parse(user_agent)
     return f"{ua.get_device()} / {ua.get_os()}"
+
+
+def get_from() -> str:
+    return f"{get_ip()} ({get_device()})"
