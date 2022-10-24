@@ -22,8 +22,11 @@ def get_flag_dir() -> str:
 def get_flag(f):
     @wraps(f)
     def decorator(*args, **kwargs):
-        with open(get_flag_dir(), mode="r") as flag_reader:
-            flag = flag_reader.read()
+        try:
+            with open(get_flag_dir(), mode="r") as flag_reader:
+                flag = flag_reader.read()
+        except FileNotFoundError:
+            flag = "false"
 
         kwargs['flag'] = True if flag == "true" else False
 
