@@ -5,11 +5,11 @@ from flask import redirect
 from flask import current_app as app
 from flask import render_template
 
+from app.meta import get_metadata
 from app.utils import get_size
 from app.utils import login_required
 from app.utils import get_flag
 from app.utils import set_flag
-from app.meta import get_metadata
 
 bp = Blueprint("admin", __name__, url_prefix="/admin")
 
@@ -19,7 +19,7 @@ bp = Blueprint("admin", __name__, url_prefix="/admin")
 @get_flag
 def dashboard(flag: bool):
     return render_template(
-        "admin/dashboard.html",
+        "admin/dashboard.jinja2",
         flag=flag,
         files=[
             {

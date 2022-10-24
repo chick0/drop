@@ -12,6 +12,7 @@ from flask import send_from_directory
 from app.github import get_oauth_url
 from app.error import RedirectRequired
 from app.error import handle_redirect_required
+from app.size import size_to_string
 
 
 def create_app():
@@ -46,5 +47,6 @@ def create_app():
         }.get(name, "javascript:alert('Undefined URL name');")
 
     app.add_template_filter(get_url)
+    app.add_template_filter(size_to_string)
 
     return app
