@@ -1,6 +1,7 @@
 from os import remove
 from os.path import join
 from os.path import getsize
+from re import compile
 from functools import wraps
 
 from flask import request
@@ -10,6 +11,11 @@ from flask import redirect
 from user_agents import parse
 
 from app.github import get_oauth_url
+
+
+def safe_filename(filename: str) -> str:
+    pattern = compile(r"[^\w\-.가-힣]")
+    return pattern.sub("_", filename)
 
 
 def safe_remove(path: str):

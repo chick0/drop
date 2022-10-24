@@ -6,8 +6,8 @@ from flask import Blueprint
 from flask import request
 from flask import current_app as app
 from flask import render_template
-from werkzeug.utils import secure_filename
 
+from app.utils import safe_filename
 from app.utils import safe_remove
 from app.utils import get_size
 from app.utils import get_flag
@@ -34,10 +34,7 @@ def upload(flag: bool):
 
     file = request.files['file']
 
-    filename = secure_filename(file.filename)
-
-    if "." not in filename:
-        return "한글 파일명을 사용할 수 없습니다.", 400
+    filename = safe_filename(file.filename)
 
     if not filename.endswith(".zip"):
         return "zip 파일만 업로드 할 수 있습니다.", 400
