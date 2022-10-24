@@ -1,0 +1,61 @@
+{% extends 'layout.html' %}
+{% block body %}
+    <h2 class="title is-2">업로드된 파일</h2>
+    <p class="subtitle">총 {{ files|length }}개의 파일이 업로드되었습니다.</p>
+
+    <div class="tags has-addons is-clickable" id="toggle">
+        <span class="tag is-dark">업로드 상태</span>
+        {% if flag is true %}
+            <span class="tag is-success">켜짐</span>
+        {% else %}
+            <span class="tag is-danger">꺼짐</span>
+        {% endif %}
+    </div>
+
+    {% for file in files %}
+        <div class="box">
+            <h3 class="title is-5">{{ file.name }}</h3>
+            <ul>
+                <li class="timestamp">{{ file.meta.created_at }}</li>
+                <li>{{ file.meta.ip }}</li>
+                <li>{{ file.meta.device }}</li>
+                <li class="size">{{ file.size }}</li>
+            </ul>
+            <hr />
+            <div class="buttons">
+                <a class="button is-primary" href="/download/{{ file.name }}">다운로드</a>
+                <a class="button is-danger" href="/delete/{{ file.name }}">삭제</a>
+            </div>
+        </div>
+    {% endfor %}
+
+    <script>
+        const STEP = 1024;
+        const KB =  1 * STEP;
+        const MB = KB * STEP;
+        const GB = MB * STEP;
+
+        document.getElementById("toggle").addEventListener("click", () => {
+            location.replace("/admin/toggle");
+        });
+
+        document.querySelectorAll("li.timestamp").forEach((e) => {
+            let date = new Date(Number(e.innerText) * 1000);
+            e.innerText = date.toLocaleString();
+        });
+
+        document.querySelectorAll("li.size").forEach((e) => {
+            let size = Number(e.innerText);
+
+            if (size >= GB) {
+                size = (size / GB).toFixed(2) + " GB";
+            } else if (size >= MB) {
+                size = (size / MB).toFixed(2) + " MB";
+            } else if (size >= KB) {
+                size = (size / KB).toFixed(2) + " KB";
+            }
+
+            e.innerText = size;
+        });
+    </script>
+{% endblock %}

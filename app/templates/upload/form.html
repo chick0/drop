@@ -1,0 +1,45 @@
+{% extends 'layout.html' %}
+{% block head %}
+    <link rel="stylesheet" href="https://unpkg.com/dropzone@5/dist/min/dropzone.min.css" type="text/css" />
+    <style>
+        .box.is-dropzone {
+            padding: 0;
+        }
+
+        .dropzone {
+            min-height: 50vh;
+            border: none;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <h2 class="title is-3">드롭서버 주의사항</h2>
+    <div class="content">
+        <ol>
+            <li>압축 파일(zip)만 업로드 할 수 있습니다.</li>
+            <li>업로드는 최대 1GB까지 할 수 있습니다.</li>
+            <li>한글 파일 이름을 사용할 수 없습니다.</li>
+        </ol>
+    </div>
+
+    <div class="box is-dropzone">
+        <div class="dropzone"></div>
+    </div>
+
+    <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
+    <script>
+        const dropzone = new Dropzone(
+            "div.dropzone",
+            {
+                chunking: true,
+                forceChunking: true,
+                paramName: 'file',
+                url: "/upload",
+                maxFilesize: 1024,
+                chunkSize: 8 * 1024 * 1024,
+                acceptedFiles: ".zip",
+                dictDefaultMessage: "업로드할 파일을 여기로 끌어주세요.<hr>또는 클릭해서 파일을 선택할 수 있습니다."
+            }
+        );
+    </script>
+{% endblock %}

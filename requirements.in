@@ -1,0 +1,7 @@
+Flask
+waitress
+python-dotenv
+requests
+User-Agents
+# Linter
+flake8

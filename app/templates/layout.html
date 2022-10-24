@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta name="robots" content="noindex, nofollow" />
+        <meta name="author" content="chick_0" />
+        <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1.0, shrink-to-fit=no" />
+        <link rel="stylesheet" href="/static/bulma.min.css">
+        <title>드롭서버</title>
+        {% block head %}{% endblock %}
+    </head>
+    <body>
+        <div class="section container">
+            {% set e = request.args.get("e") %}
+            {% if e is not none %}
+                <div class="notification is-danger">
+                    <p>{{ e }}</p>
+                </div>
+            {% endif %}
+
+            {% block body %}{% endblock %}
+        </div>
+    </body>
+</html>
