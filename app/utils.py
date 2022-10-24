@@ -1,3 +1,4 @@
+from os import remove
 from os.path import join
 from os.path import getsize
 from functools import wraps
@@ -9,6 +10,13 @@ from flask import redirect
 from user_agents import parse
 
 from app.github import get_oauth_url
+
+
+def safe_remove(path: str):
+    try:
+        remove(path)
+    except (FileNotFoundError, PermissionError):
+        pass
 
 
 def get_size(filename: str) -> int:

@@ -14,6 +14,9 @@ bp = Blueprint("auth", __name__, url_prefix="/auth")
 def callback():
     code = request.args.get("code", "")
 
+    if len(code) == 0:
+        return redirect("/?e=코드가 올바르지 않습니다.")
+
     token = get_access_token(code)
     user = get_user(token)
 

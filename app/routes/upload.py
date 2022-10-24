@@ -1,4 +1,3 @@
-from os import remove
 from os.path import join
 from os.path import exists
 from logging import getLogger
@@ -9,12 +8,13 @@ from flask import current_app as app
 from flask import render_template
 from werkzeug.utils import secure_filename
 
+from app.utils import safe_remove
 from app.utils import get_size
 from app.utils import get_flag
 from app.meta import create_metadata
 
 bp = Blueprint("upload", __name__, url_prefix="/")
-log = getLogger("")
+log = getLogger()
 
 
 @bp.get("")
@@ -26,7 +26,8 @@ def front():
 @get_flag
 def upload(flag: bool):
     def remove_self():
-        remove(save_path)
+        safe_remove(save_path)
+        safe_remove(save_path + ".metadata")
 
     if not flag:
         return "업로드 비활성화 상태입니다.", 403
@@ -59,7 +60,7 @@ def upload(flag: bool):
             f.seek(int(request.form['dzchunkbyteoffset']))
             f.write(stream)
     except OSError:
-        log.exception("Could not write to file")
+        log.exception("Fail to save uploaded file!!!")
         remove_self()
         return "파일 저장 과정에서 오류가 발생했습니다.", 500
 
@@ -70,14 +71,9 @@ def upload(flag: bool):
         size = get_size(filename)
 
         if size != total_file_size:
-            log.error(f"File {filename!r} was completed, but has a size mismatch. "
-                      f"Was {size} but we expected {total_file_size}.")
             remove_self()
-            return "파일 크기 일치하지 않음", 500
+            return "업로드한 파일의 크기가 일치하지 않아 취소되었습니다.", 400
         else:
-            log.info(f"File {filename!r} has been uploaded successfully.")
             create_metadata(filename)
-    else:
-        log.debug(f"Chunk {current_chunk + 1} of {total_chunks} for file {filename!r} complete.")
 
     return "업로드 성공", 200

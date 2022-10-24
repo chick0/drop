@@ -36,7 +36,15 @@ def create_metadata(filename: str) -> None:
 
 
 def get_metadata(filename: str) -> MetaData:
-    with open(get_path(filename), mode="r") as meta_reader:
-        md = MetaData(**loads(meta_reader.read()))
+    try:
+        with open(get_path(filename), mode="r") as meta_reader:
+            md = MetaData(**loads(meta_reader.read()))
 
-    return md
+        return md
+    except FileNotFoundError:
+        return MetaData(
+            ip="정보없음",
+            user_agent="정보없음",
+            device="정보없음",
+            created_at=0
+        )
