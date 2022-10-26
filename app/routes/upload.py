@@ -69,7 +69,7 @@ def upload(flag: bool):
         if not head.startswith(b"PK"):
             return "해당 파일은 zip 파일이 아닙니다.", 400
 
-        logger.info(f"{filename!r} file uploading start from by {get_from()}")
+        logger.info(f"{filename!r} file uploading started by {get_from()!r}")
 
     total_file_size = int(request.form['dztotalfilesize'])
 
@@ -95,6 +95,6 @@ def upload(flag: bool):
             return "업로드한 파일의 크기가 일치하지 않아 취소되었습니다.", 400
         else:
             create_metadata(filename)
-            logger.info(f"{filename!r} file uploaded by {get_from()}")
+            logger.info(f"{filename!r} file uploaded by {get_from()!r}")
 
     return "업로드 성공", 200

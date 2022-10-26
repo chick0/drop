@@ -43,5 +43,5 @@ def dashboard(flag: bool):
 @get_flag
 def toggle_status(flag: bool):
     set_flag(not flag)
-    logger.info(f"Flag updated to {str(flag)!r} from {get_from()}")
+    logger.info(f"Flag updated to {str(flag)!r} from {get_from()!r}")
     return redirect("/admin")

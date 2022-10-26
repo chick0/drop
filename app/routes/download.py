@@ -39,5 +39,5 @@ def download(filename: str):
     if not exists(path):
         return redirect("/admin?e=등록된 파일이 아닙니다.")
 
-    logger.info(f"{filename!r} file downloaded from {get_from()}")
+    logger.info(f"{filename!r} file downloaded from {get_from()!r}")
     return send_file(path)

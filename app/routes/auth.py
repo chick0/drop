@@ -26,8 +26,8 @@ def callback():
 
     if user.id == GITHUB_USER_ID:
         session['login'] = True
-        logger.info(f"{user.login!r} login in from {get_from()}")
+        logger.info(f"{user.login!r} login in from {get_from()!r}")
         return redirect("/admin")
     else:
-        logger.info(f"{user.login!r} try to login in from {get_from()}")
+        logger.info(f"{user.login!r} try to login in from {get_from()!r}")
         return redirect("/?e=해당 계정은 관리자가 아닙니다.")

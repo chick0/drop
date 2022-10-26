@@ -26,5 +26,5 @@ def delete(filename: str):
     safe_remove(path + ".metadata")
     safe_remove(path + ".share")
 
-    logger.info(f"{filename!r} file deleted from {get_from()}")
+    logger.info(f"{filename!r} file deleted from {get_from()!r}")
     return redirect("/admin")
