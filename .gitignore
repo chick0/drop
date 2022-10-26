@@ -6,3 +6,4 @@ drop/
 venv/
 .env
 .flag
+.SECRET_KEY

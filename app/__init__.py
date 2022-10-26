@@ -4,8 +4,7 @@ from os.path import join
 from os.path import abspath
 from os.path import dirname
 from os.path import exists
-from sys import argv
-from secrets import token_hex
+from secrets import token_bytes
 
 from flask import Flask
 from flask import send_from_directory
@@ -17,18 +16,29 @@ from app.error import handle_redirect_required
 from app.size import size_to_string
 
 
+def get_key(base_dir: str) -> bytes:
+    path = join(base_dir, ".SECRET_KEY")
+
+    try:
+        with open(path, mode="rb") as key_reader:
+            return key_reader.read()
+    except FileNotFoundError:
+        new_key = token_bytes(48)
+        with open(path, mode="wb") as key_writer:
+            key_writer.write(new_key)
+
+        return new_key
+
+
 def create_app():
     app = Flask(__name__)
-    if "--test" in argv:
-        app.config['SECRET_KEY'] = "chick_0"
-    else:
-        app.config['SECRET_KEY'] = token_hex(32)
-
     app.base_dir = dirname(dirname(abspath(__file__)))
     app.drop_dir = join(app.base_dir, "drop")
 
     if not exists(app.drop_dir):
         mkdir(app.drop_dir)
+
+    app.config['SECRET_KEY'] = get_key(app.base_dir)
 
     app.redis = Redis.from_url(environ['REDIS_URL'])
 
