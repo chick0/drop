@@ -4,6 +4,7 @@ __all__ = [
     "auth",
     "delete",
     "download",
+    "share",
     "upload",
 ]
 

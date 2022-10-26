@@ -1,4 +1,5 @@
 from os import mkdir
+from os import environ
 from os.path import join
 from os.path import abspath
 from os.path import dirname
@@ -8,6 +9,7 @@ from secrets import token_hex
 
 from flask import Flask
 from flask import send_from_directory
+from redis import Redis
 
 from app.github import get_oauth_url
 from app.error import RedirectRequired
@@ -27,6 +29,8 @@ def create_app():
 
     if not exists(app.drop_dir):
         mkdir(app.drop_dir)
+
+    app.redis = Redis.from_url(environ['REDIS_URL'])
 
     from app import routes
     for route in [getattr(routes, x) for x in routes.__all__]:

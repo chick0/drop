@@ -9,6 +9,7 @@ from flask import current_app as app
 from flask import session
 from flask import redirect
 from user_agents import parse
+from redis import Redis
 
 from app.github import get_oauth_url
 
@@ -82,3 +83,7 @@ def get_device(user_agent: str = None) -> str:
 
 def get_from() -> str:
     return f"{get_ip()} ({get_device()})"
+
+
+def get_redis() -> Redis:
+    return app.redis

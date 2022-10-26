@@ -1,7 +1,7 @@
 Flask
 waitress
 python-dotenv
+redis
 requests
 User-Agents
-# Linter
 flake8

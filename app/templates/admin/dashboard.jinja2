@@ -1,4 +1,12 @@
 {% extends 'layout.jinja2' %}
+{% block head %}
+    <style>
+        ul li:nth-child(2n - 1) {
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+    </style>
+{% endblock %}
 {% block body %}
     <h2 class="title is-2">업로드된 파일</h2>
     <p class="subtitle">총 {{ files|length }}개의 파일이 업로드되었습니다.</p>
@@ -13,18 +21,34 @@
     </div>
 
     {% for file in files %}
-        <div class="box">
+        <div class="box" id="{{ file.name }}">
             <h3 class="title is-5">{{ file.name }}</h3>
             <ul>
+                <li>업로드 시간</li>
                 <li class="timestamp">{{ file.meta.created_at }}</li>
+                <li>파일 업로드 IP</li>
                 <li>{{ file.meta.ip }}</li>
+                <li>업로드 기기 정보</li>
                 <li title="{{ file.meta.user_agent }}">{{ file.meta.device }}</li>
+                <li>파일 크기</li>
                 <li title="{{ file.size }}">{{ file.size|size_to_string }}</li>
+                {% if file.share is not none %}
+                    <li>공유 시작 시간</li>
+                    <li class="timestamp">{{ file.share.created_at }}</li>
+                    <li>공유 종료 시간</li>
+                    <li class="timestamp">{{ file.share.created_at + share_ttl }}</li>
+                {% endif %}
             </ul>
             <hr />
             <div class="buttons">
                 <a class="button is-primary" href="/download/{{ file.name }}">다운로드</a>
                 <a class="button is-danger" href="/delete/{{ file.name }}">삭제</a>
+                {% if file.share is none %}
+                    <a class="button is-link" href="/share/start/{{ file.name }}">공유하기</a>
+                {% else %}
+                    <button class="button is-link link-share" data-path="/download/{{ file.name }}?token={{ file.share.token }}">링크 복사하기</button>
+                    <a class="button is-danger" href="/share/stop/{{ file.name }}">공유 중단하기</a>
+                {% endif %}
             </div>
         </div>
     {% endfor %}
@@ -38,5 +62,16 @@
             let date = new Date(Number(e.innerText) * 1000);
             e.innerText = date.toLocaleString();
         });
+
+        document.querySelectorAll("button.link-share").forEach((e) => {
+            e.addEventListener("click", (event) => {
+                const url = location.origin + event.currentTarget.dataset.path;
+                window.navigator.clipboard.writeText(url).then(() => {
+                    alert("다운로드 링크가 복사되었습니다.");
+                }).catch(() => {
+                    prompt("아래의 텍스트를 복사해주세요.", url);
+                });
+            });
+        })
     </script>
 {% endblock %}
