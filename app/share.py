@@ -1,3 +1,4 @@
+from os.path import join
 from json import loads
 from json import dumps
 from secrets import token_hex
@@ -5,7 +6,9 @@ from typing import NamedTuple
 from datetime import datetime
 from datetime import timedelta
 
-from app.utils import get_redis
+from flask import current_app as app
+
+from app.utils import safe_remove
 
 share_ttl = timedelta(hours=1)
 
@@ -13,39 +16,41 @@ share_ttl = timedelta(hours=1)
 class ShareStatus(NamedTuple):
     token: str
     created_at: int
+    stopped_at: int
 
 
-def get_key(filename: str) -> str:
-    return f"chick0/drop:{filename}"
+def get_path(filename: str) -> str:
+    return join(app.drop_dir, filename + ".share")
 
 
 def get_status(filename: str) -> ShareStatus or None:
-    redis = get_redis()
+    try:
+        with open(get_path(filename), mode="r") as reader:
+            status = ShareStatus(**loads(reader.read()))
 
-    item = redis.get(get_key(filename))
+            now = datetime.now().timestamp()
 
-    if item is None:
+            if now >= status.stopped_at:
+                remove_token(filename)
+                return None
+
+            return status
+    except FileNotFoundError:
         return None
-
-    return ShareStatus(**loads(item.decode("utf-8")))
 
 
 def create_token(filename: str) -> None:
     now = datetime.now()
-    redis = get_redis()
 
     item = ShareStatus(
-        token=token_hex(36),
-        created_at=now.timestamp()
+        token=token_hex(10),
+        created_at=now.timestamp(),
+        stopped_at=(now + share_ttl).timestamp()
     )._asdict()
 
-    redis.set(
-        get_key(filename),
-        dumps(item),
-        ex=share_ttl.seconds
-    )
+    with open(get_path(filename), mode="w") as writer:
+        writer.write(dumps(item))
 
 
 def remove_token(filename: str) -> None:
-    redis = get_redis()
-    redis.delete(get_key(filename))
+    safe_remove(get_path(filename))

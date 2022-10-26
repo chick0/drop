@@ -1,7 +1,6 @@
 Flask
 waitress
 python-dotenv
-redis
 requests
 User-Agents
 flake8

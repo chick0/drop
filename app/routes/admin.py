@@ -7,7 +7,6 @@ from flask import current_app as app
 from flask import render_template
 
 from app.meta import get_metadata
-from app.share import share_ttl
 from app.share import get_status
 from app.utils import get_size
 from app.utils import login_required
@@ -26,7 +25,6 @@ def dashboard(flag: bool):
     return render_template(
         "admin/dashboard.jinja2",
         flag=flag,
-        share_ttl=share_ttl.seconds,
         files=[
             {
                 "name": filename,
