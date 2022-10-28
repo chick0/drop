@@ -11,6 +11,7 @@ from flask import render_template
 from app.size import MB
 from app.size import size_to_string
 from app.database import create_database
+from app.error import CustomError
 from app.utils import safe_filename
 from app.utils import safe_remove
 from app.utils import get_size
@@ -30,7 +31,10 @@ def get_max_size() -> int:
 @get_flag
 def front(flag: bool):
     if not flag:
-        return render_template("upload/blocked.jinja2")
+        raise CustomError(
+            title="권한 오류",
+            message="파일 업로드 비활성화 상태입니다."
+        )
 
     return render_template(
         "upload/form.jinja2",

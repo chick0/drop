@@ -10,7 +10,9 @@ from flask import send_from_directory
 
 from app.github import get_oauth_url
 from app.error import RedirectRequired
+from app.error import CustomError
 from app.error import handle_redirect_required
+from app.error import handle_custom_error
 from app.size import size_to_string
 
 
@@ -51,6 +53,11 @@ def create_app():
     app.register_error_handler(
         code_or_exception=RedirectRequired,
         f=handle_redirect_required
+    )
+
+    app.register_error_handler(
+        code_or_exception=CustomError,
+        f=handle_custom_error
     )
 
     def get_url(name: str) -> str:

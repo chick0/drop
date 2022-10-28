@@ -20,6 +20,13 @@
         {% endif %}
     </div>
 
+    {% set e = request.args.get("e") %}
+    {% if e is not none %}
+        <div class="notification is-danger">
+            <p>{{ e }}</p>
+        </div>
+    {% endif %}
+
     {% if force_delete_required %}
         <div class="notification is-danger">
             <p><b>주의!</b> 업로드된 파일 개수와 등록된 파일의 개수가 다릅니다!</p>

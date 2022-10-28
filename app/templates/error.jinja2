@@ -1,0 +1,19 @@
+{% extends 'layout.jinja2' %}
+{% block head %}
+    <style>
+        .title {
+            margin-top: 20vh;
+        }
+
+        .title, .content {
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+{% block body %}
+    <h1 class="title is-1">{{ title }}</h1>
+
+    <div class="content is-medium">
+        <p>{{ message }}</p>
+    </div>
+{% endblock %}
