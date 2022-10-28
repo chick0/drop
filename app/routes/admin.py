@@ -6,9 +6,7 @@ from flask import redirect
 from flask import current_app as app
 from flask import render_template
 
-from app.meta import get_metadata
-from app.share import get_status
-from app.utils import get_size
+from app.database import get_database
 from app.utils import login_required
 from app.utils import get_flag
 from app.utils import set_flag
@@ -22,18 +20,26 @@ logger = getLogger()
 @login_required
 @get_flag
 def dashboard(flag: bool):
+    def get_size(ext: str):
+        return len([
+            x
+            for x in listdir(app.drop_dir)
+            if x.endswith(ext)
+        ])
+
     return render_template(
         "admin/dashboard.jinja2",
         flag=flag,
+        force_delete_required=len(listdir(app.data_dir)) != (get_size(".zip") - get_size(".part")),
         files=[
-            {
-                "name": filename,
-                "meta": get_metadata(filename),
-                "size": get_size(filename),
-                "share": get_status(filename)
-            }
-            for filename in listdir(app.drop_dir)
-            if filename.endswith(".zip")
+            file for file in [
+                {
+                    "id": file_id,
+                    "database": get_database(file_id)
+                }
+                for file_id in listdir(app.data_dir)
+            ]
+            if file['database'] is not None
         ]
     )
 

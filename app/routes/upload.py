@@ -10,7 +10,7 @@ from flask import render_template
 
 from app.size import MB
 from app.size import size_to_string
-from app.meta import create_metadata
+from app.database import create_database
 from app.utils import safe_filename
 from app.utils import safe_remove
 from app.utils import get_size
@@ -44,7 +44,7 @@ def front(flag: bool):
 def upload(flag: bool):
     def remove_self():
         safe_remove(save_path)
-        safe_remove(save_path + ".metadata")
+        safe_remove(part_path)
 
     if not flag:
         return "업로드 비활성화 상태입니다.", 403
@@ -62,6 +62,12 @@ def upload(flag: bool):
     if exists(save_path) and current_chunk == 0:
         return "이미 업로드된 파일입니다.", 400
 
+    part_path = save_path + ".part"
+
+    if not exists(part_path):
+        fp = open(part_path, mode="wb")
+        fp.close()
+
     stream = file.stream.read()
 
     if current_chunk == 0:
@@ -69,7 +75,7 @@ def upload(flag: bool):
         if not head.startswith(b"PK"):
             return "해당 파일은 zip 파일이 아닙니다.", 400
 
-        logger.info(f"{filename!r} file uploading started by {get_from()!r}")
+        logger.info(f"{filename!r} uploading started by {get_from()!r}")
 
     total_file_size = int(request.form['dztotalfilesize'])
 
@@ -94,7 +100,8 @@ def upload(flag: bool):
             remove_self()
             return "업로드한 파일의 크기가 일치하지 않아 취소되었습니다.", 400
         else:
-            create_metadata(filename)
-            logger.info(f"{filename!r} file uploaded by {get_from()!r}")
+            safe_remove(part_path)
+            file_id = create_database(filename)
+            logger.info(f"{filename!r}({file_id}) uploaded by {get_from()!r}")
 
     return "", 200

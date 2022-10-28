@@ -30,12 +30,16 @@ mccabe==0.7.0
     # via flake8
 pycodestyle==2.9.1
     # via flake8
+pydantic==1.10.2
+    # via -r requirements.in
 pyflakes==2.5.0
     # via flake8
 python-dotenv==0.21.0
     # via -r requirements.in
 requests==2.28.1
     # via -r requirements.in
+typing-extensions==4.4.0
+    # via pydantic
 ua-parser==0.16.1
     # via user-agents
 urllib3==1.26.12

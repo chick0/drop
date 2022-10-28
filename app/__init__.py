@@ -32,9 +32,11 @@ def create_app():
     app = Flask(__name__)
     app.base_dir = dirname(dirname(abspath(__file__)))
     app.drop_dir = join(app.base_dir, "drop")
+    app.data_dir = join(app.base_dir, "database")
 
-    if not exists(app.drop_dir):
-        mkdir(app.drop_dir)
+    for test in [app.drop_dir, app.data_dir]:
+        if not exists(test):
+            mkdir(test)
 
     app.config['SECRET_KEY'] = get_key(app.base_dir)
 

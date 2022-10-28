@@ -20,34 +20,44 @@
         {% endif %}
     </div>
 
+    {% if force_delete_required %}
+        <div class="notification is-danger">
+            <p><b>주의!</b> 업로드된 파일 개수와 등록된 파일의 개수가 다릅니다!</p>
+            <p>수동으로 충돌 문제를 해결해야 정상적으로 업로드 기능을 사용할 수 있습니다.</p>
+        </div>
+    {% endif %}
+
     {% for file in files %}
-        <div class="box" id="{{ file.name }}">
-            <h3 class="title is-5">{{ file.name }}</h3>
+        <div class="box" id="{{ file.id }}">
+            <h3 class="title is-5">
+                {% if file.database.share is true %}
+                    <span class="tag is-success">공유</span>
+                {% endif %}
+                {{ file.database.filename }}
+            </h3>
             <ul>
                 <li>업로드 시간</li>
-                <li class="timestamp">{{ file.meta.created_at }}</li>
+                <li class="timestamp">{{ file.database.created_at }}</li>
                 <li>파일 업로드 IP</li>
-                <li>{{ file.meta.ip }}</li>
+                <li>{{ file.database.ip }}</li>
                 <li>업로드 기기 정보</li>
-                <li title="{{ file.meta.user_agent }}">{{ file.meta.device }}</li>
+                <li title="{{ file.database.user_agent }}">{{ file.database.device }}</li>
                 <li>파일 크기</li>
-                <li title="{{ file.size }}">{{ file.size|size_to_string }}</li>
-                {% if file.share is not none %}
+                <li title="{{ file.database.size }}">{{ file.database.size|size_to_string }}</li>
+                {% if file.database.share is true %}
                     <li>공유 시작 시간</li>
-                    <li class="timestamp">{{ file.share.created_at }}</li>
-                    <li>공유 종료 시간</li>
-                    <li class="timestamp">{{ file.share.stopped_at }}</li>
+                    <li class="timestamp">{{ file.database.shared_at }}</li>
                 {% endif %}
             </ul>
             <hr>
             <div class="buttons">
-                <a class="button is-primary" href="/dl/{{ file.name }}">다운로드</a>
-                <a class="button is-danger" href="/delete/{{ file.name }}">삭제</a>
-                {% if file.share is none %}
-                    <a class="button is-info" href="/share/start/{{ file.name }}">공유하기</a>
+                <a class="button is-primary" href="/dl/{{ file.id }}">다운로드</a>
+                <a class="button is-danger" href="/delete/{{ file.id }}">삭제</a>
+                {% if file.database.share %}
+                    <button class="button is-link link-share" data-path="/dl/{{ file.id }}">다운로드 링크 복사</button>
+                    <a class="button is-danger" href="/share/stop/{{ file.id }}">공유 중단하기</a>
                 {% else %}
-                    <button class="button is-link link-share" data-path="/dl/{{ file.name }}?t={{ file.share.token }}">링크 복사하기</button>
-                    <a class="button is-danger" href="/share/stop/{{ file.name }}">공유 중단하기</a>
+                    <a class="button is-info" href="/share/start/{{ file.id }}">공유하기</a>
                 {% endif %}
             </div>
         </div>
