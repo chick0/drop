@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from requests import get
 from requests import post
 
-from app.error import RedirectRequired
+from app.error import CustomError
 
 if "CLIENT_ID" not in environ:
     load_dotenv()
@@ -44,7 +44,11 @@ def get_access_token(code: str) -> str:
     try:
         return json['access_token']
     except KeyError:
-        raise RedirectRequired(url=get_oauth_url())
+        raise CustomError(
+            title="인증 오류",
+            message="인증 토큰을 불러올 수 없습니다.",
+            code=403
+        )
 
 
 def get_user(token: str) -> GithubUser:
@@ -64,4 +68,8 @@ def get_user(token: str) -> GithubUser:
             id=json['id']
         )
     else:
-        raise RedirectRequired(url=get_oauth_url())
+        raise CustomError(
+            title="인증 오류",
+            message="OAuth 서버에서 사용자 정보를 불러오지 못했습니다.",
+            code=403
+        )

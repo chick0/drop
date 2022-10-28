@@ -9,9 +9,7 @@ from flask import Flask
 from flask import send_from_directory
 
 from app.github import get_oauth_url
-from app.error import RedirectRequired
 from app.error import CustomError
-from app.error import handle_redirect_required
 from app.error import handle_custom_error
 from app.size import size_to_string
 
@@ -49,11 +47,6 @@ def create_app():
     @app.get("/robots.txt")
     def robots():
         return send_from_directory(app.base_dir, "robots.txt")
-
-    app.register_error_handler(
-        code_or_exception=RedirectRequired,
-        f=handle_redirect_required
-    )
 
     app.register_error_handler(
         code_or_exception=CustomError,
