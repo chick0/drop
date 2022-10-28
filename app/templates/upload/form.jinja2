@@ -8,7 +8,7 @@
 
         .dropzone {
             min-height: 50vh;
-            border: none;
+            border: none !important;
         }
     </style>
 {% endblock %}
@@ -27,6 +27,7 @@
 
     <script src="https://unpkg.com/dropzone@5/dist/min/dropzone.min.js"></script>
     <script>
+        Dropzone.autoDiscover = false;
         const dropzone = new Dropzone(
             "div.dropzone",
             {
