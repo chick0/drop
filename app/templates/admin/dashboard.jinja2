@@ -39,14 +39,14 @@
                     <li class="timestamp">{{ file.share.stopped_at }}</li>
                 {% endif %}
             </ul>
-            <hr />
+            <hr>
             <div class="buttons">
-                <a class="button is-primary" href="/download/{{ file.name }}">다운로드</a>
+                <a class="button is-primary" href="/dl/{{ file.name }}">다운로드</a>
                 <a class="button is-danger" href="/delete/{{ file.name }}">삭제</a>
                 {% if file.share is none %}
                     <a class="button is-info" href="/share/start/{{ file.name }}">공유하기</a>
                 {% else %}
-                    <button class="button is-link link-share" data-path="/download/{{ file.name }}?token={{ file.share.token }}">링크 복사하기</button>
+                    <button class="button is-link link-share" data-path="/dl/{{ file.name }}?t={{ file.share.token }}">링크 복사하기</button>
                     <a class="button is-danger" href="/share/stop/{{ file.name }}">공유 중단하기</a>
                 {% endif %}
             </div>

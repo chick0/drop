@@ -34,8 +34,8 @@ def front(flag: bool):
 
     return render_template(
         "upload/form.jinja2",
-        max_size=int(get_max_size() / MB),
-        max_size_s=size_to_string(get_max_size())
+        max_size=get_max_size(),
+        MB=MB
     )
 
 
@@ -97,4 +97,4 @@ def upload(flag: bool):
             create_metadata(filename)
             logger.info(f"{filename!r} file uploaded by {get_from()!r}")
 
-    return "업로드 성공", 200
+    return "", 200

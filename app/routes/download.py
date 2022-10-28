@@ -12,7 +12,7 @@ from flask import current_app as app
 from app.share import get_status
 from app.utils import get_from
 
-bp = Blueprint("download", __name__, url_prefix="/download")
+bp = Blueprint("download", __name__, url_prefix="/dl")
 logger = getLogger()
 
 
@@ -21,7 +21,7 @@ def download(filename: str):
     logined = session.get("login", False)
 
     if not logined:
-        token = request.args.get("token", "")
+        token = request.args.get("t", "")
 
         if len(token) == 0:
             return redirect("/?e=해당 파일을 다운로드할 권한이 없습니다.")
